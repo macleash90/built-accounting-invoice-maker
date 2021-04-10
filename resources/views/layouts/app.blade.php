@@ -12,18 +12,20 @@
     <!-- Favicon -->
     <link rel="icon" href="{{asset('img/favicon-32x32.png')}}">
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/fontawesome/css/all.css') }}" rel="stylesheet">
+    @section('styles')
+
+	@show
 </head>
 <body>
     <div id="app">
+        <vue-progress-bar></vue-progress-bar>
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -52,6 +54,55 @@
                                 </li>
                             @endif
                         @else
+
+                        <li class="nav-item dropdown">
+                                <a id="customers-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                {{ __('built.Customers') }}
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="customers-dropdown">
+                                    <a class="dropdown-item" href="{{ route('customers.create') }}">
+                                    {{ __('built.Create') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('customers.index') }}">
+                                    {{ __('built.All') }}
+                                    </a>
+
+                                </div>
+                            </li>
+
+                        <li class="nav-item dropdown">
+                                <a id="items-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                {{ __('built.Items') }}
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="items-dropdown">
+                                    <a class="dropdown-item" href="{{ route('items.create') }}">
+                                    {{ __('built.Create') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('items.index') }}">
+                                    {{ __('built.All') }}
+                                    </a>
+
+                                </div>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a id="invoices-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                {{ __('built.Invoices') }}
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="invoices-dropdown">
+                                    <a class="dropdown-item" href="{{ route('invoices.create') }}">
+                                    {{ __('built.Create') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('invoices.index') }}">
+                                    {{ __('built.All') }}
+                                    </a>
+
+                                </div>
+                            </li>
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
@@ -79,5 +130,53 @@
             @yield('content')
         </main>
     </div>
+    
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}"></script>
+
+    @if(Session::has('success'))
+	<script>
+		toast.fire({
+			icon: "success",
+			title: "{{Session::get('success')}}"
+		});
+	</script>
+	@endif
+
+	@if(Session::has('error'))
+	<script>
+		toast.fire({
+			icon: "error",
+			title: "{{Session::get('error')}}"
+		});
+	</script>
+	@endif
+
+	<script>
+		function dataTableErrorFn(e, settings, techNote, message) {
+			// console.log(settings.jqXHR.status);
+			//logout user if session expired
+			if (settings.jqXHR.status == "419") {
+				swal.fire({
+					title: "Session Expired",
+					text: "Your session has expired, please refresh the page",
+					icon: "warning",
+					showCancelButton: false,
+					confirmButtonColor: "#3085d6",
+					cancelButtonColor: "#d33",
+					confirmButtonText: "Ok",
+					allowOutsideClick: false
+				}).then(result => {
+					if (result.value) {
+						window.location.reload();
+					}
+				});
+			}
+		}
+	</script>
+
+	@section('scripts')
+
+	@show
 </body>
 </html>
