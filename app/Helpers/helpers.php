@@ -49,3 +49,11 @@ if ( !function_exists('truncate_string'))
         }
     }
 }
+
+if ( !function_exists('to_2dp'))
+{
+    function to_2dp($num1)
+    {
+        return number_format((float)$num1, 2, '.', '');
+    }
+}

@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section("title")
+{{config("app.name")}} | Add Customer
+@stop
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">

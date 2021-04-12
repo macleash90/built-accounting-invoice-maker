@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Invoice extends Model
 {
+    use SoftDeletes;
     protected static function boot()
     {
         parent::boot();
@@ -17,5 +19,15 @@ class Invoice extends Model
 
         });
         
+    }
+
+    public function invoice_items()
+    {
+        return $this->hasMany("\App\Models\InvoiceItem","invoice_id","id");
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo("\App\Models\Customer","customer_id","id")->withDefault();
     }
 }

@@ -58,7 +58,13 @@ class ItemsController extends Controller
         {
             $item->img = $request->img;
         }
+        else
+        {
+            $item->img = "img/item_default.jpg";
+        }
         $item->save();
+
+        $item->item_img = $item->img;
 
         return response()->json(["status" => "success", "message" => "Item successfully saved", "item" => $item]);
     }
@@ -171,7 +177,7 @@ class ItemsController extends Controller
     {
         $search_key = $request->search['value'] ?? '';
 
-        $query = Item::select("id","name","item_description","created_at")
+        $query = Item::select("id","name","item_price","item_description","created_at")
             ->orderBy("name", "ASC");
             
         if(!empty($search_key))

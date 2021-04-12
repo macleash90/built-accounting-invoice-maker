@@ -17,6 +17,8 @@ const toast = swal.mixin({
     showConfirmButton: false,
     timer: 10000,
     timerProgressBar: true,
+    background: '#2183d5',
+
     onOpen: toast => {
         toast.addEventListener("mouseenter", swal.stopTimer);
         toast.addEventListener("mouseleave", swal.resumeTimer);
@@ -70,6 +72,69 @@ axios.interceptors.response.use(
 );
 
 
+// define a mixin object
+
+Vue.mixin({
+    methods: {
+        isEmpty: function (strIn) {
+            if (strIn === undefined) {
+                return true;
+            }
+            else if (strIn == null) {
+                return true;
+            }
+            else if (strIn == "") {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
+        isEmptyObject: function(obj)
+        {
+            Object.keys(obj).length === 0
+        },
+        getCurrentDateTime: function() {
+            var now     = new Date(); 
+            var year    = now.getFullYear();
+            var month   = now.getMonth()+1; 
+            var day     = now.getDate();
+            var hour    = now.getHours();
+            var minute  = now.getMinutes();
+            var second  = now.getSeconds(); 
+            if(month.toString().length == 1) {
+                 month = '0'+month;
+            }
+            if(day.toString().length == 1) {
+                 day = '0'+day;
+            }   
+            if(hour.toString().length == 1) {
+                 hour = '0'+hour;
+            }
+            if(minute.toString().length == 1) {
+                 minute = '0'+minute;
+            }
+            if(second.toString().length == 1) {
+                 second = '0'+second;
+            }   
+            var dateTime = year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second;   
+             return dateTime;
+        },
+        to_2dp: function(number_)
+        {
+            if(isNaN(number_))
+            {
+                return 0.00;
+            }
+            else
+            {
+                return  Math.round((number_ + Number.EPSILON) * 100) / 100
+
+            }
+         }
+    }
+  })
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -97,6 +162,8 @@ Vue.component('items-view', require('./pages/items/ItemsView').default);
 Vue.component('customers-create', require('./pages/customers/CustomersCreate').default);
 Vue.component('customers-edit', require('./pages/customers/CustomersEdit').default);
 Vue.component('customers-view', require('./pages/customers/CustomersView').default);
+
+Vue.component('invoice-create', require('./pages/invoices/InvoiceCreate').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

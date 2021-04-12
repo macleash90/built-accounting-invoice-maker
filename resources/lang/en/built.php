@@ -21,4 +21,8 @@ return [
     'Edit Customer' => 'Edit Customer',
     'View Customer' => 'View Customer',
 
+    'All Users' => 'All Users',
+    'Users' => 'Users',
+    
+
 ];

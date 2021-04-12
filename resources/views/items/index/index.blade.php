@@ -29,6 +29,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Price(GHS)</th>
                                 <th>Description</th>
                                 <th>Created At</th>
                                 <th>Actions</th>

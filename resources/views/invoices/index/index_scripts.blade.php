@@ -1,6 +1,11 @@
 <script>
 	$(function() {
  
+		// initiate select2
+		$('#customers').select2({
+			placeholder: "Select or search"
+        });
+
 		//set datatable error to not display
 		$.fn.dataTable.ext.errMode = 'none';
 		// begin first table
@@ -8,7 +13,6 @@
 			.on('error.dt', function(e, settings, techNote, message) {
 				//pass the error to the dataTableErrorFn function in /resources/layouts/app.blade.php
 				dataTableErrorFn(e, settings, techNote, message);
-
 			})
 			.DataTable({
                 dom: 'Bfrtip',
@@ -28,29 +32,35 @@
 				ordering: false,
 				// pageLength: 10,
 				ajax: {
-					url: "{{route('items.paginate')}}",
+					url: "{{route('invoices.paginate')}}",
 					type: 'POST',
 					'headers': {
 						'X-CSRF-TOKEN': '{{ csrf_token() }}'
 					},
 					"data": function(d) {
-                        
+						d.customers = $('select[id=customers]').val();
+                        d.start_date = $('input[id=start_date]').val();
+                        d.end_date = $('input[id=end_date]').val();
 					}
 				},
 				columns: [
 					{
-						data: 'name',
+						data: 'invoice_number',
 					},
 					{
-						data: 'item_price',
-					},
+						data: 'total_amount'
+                    },
 					{
-						data: 'item_description'
+						data: 'invoice_date'
                     },
-                    {
-						data: 'created_at',
-                        'searchable': false 
+					{
+						data: 'customer_name',
+						'searchable': false 
                     },
+                    // {
+					// 	data: 'created_at',
+                    //     'searchable': false 
+                    // },
 					{
 						data: 'actions',
 						responsivePriority: -1
@@ -63,11 +73,8 @@
 						render: function(data, type, full, meta) {
 							
 							return '\
-							<a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="View details">\
+							<a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Preview Invoice">\
 								<i class="fa fa-eye text-warning"></i>\
-							</a>\
-                            <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Edit details">\
-								<i class="fa fa-edit text-primary"></i>\
 							</a>\
                             <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete">\
 								<i class="fa fa-trash text-danger"></i>\
@@ -79,18 +86,11 @@
 				],
 			})
 
-		//edit button
-		$('#built_table').on('click', 'tr td i.fa-edit ',
-			function() {
-				var id = dataTable.row(this.closest('tr')).id();
-				window.location.href = "/items/" + id + "/edit";
-			});
-
-            //view button
+        //preview button
 		$('#built_table').on('click', 'tr td i.fa-eye ',
 			function() {
 				var id = dataTable.row(this.closest('tr')).id();
-				window.location.href = "/items/" + id;
+				window.location.href = "/invoices/" + id;
 			});
 
 		//delete button
@@ -99,7 +99,7 @@
 				var id = dataTable.row(this.closest('tr')).id();
 				swal.fire({
 					title: "Are you sure?",
-					html: "Do you really want to delete this item?",
+					html: "Do you really want to delete this invoice?",
 					icon: "warning",
 					showCancelButton: true,
 					confirmButtonColor: "#3085d6",
@@ -107,7 +107,7 @@
 					confirmButtonText: "Yes, delete!"
 				}).then(result => {
 					if (result.value) {
-						axios.delete('/items/' + id, {
+						axios.delete('/invoices/' + id, {
 								headers: {
 									'X-CSRF-TOKEN': '{{ csrf_token() }}'
 								},
@@ -131,12 +131,5 @@
 			dataTable.draw();
 		});
 
-
-
-		function editCustomer(customer) {
-			// e.preventDefault();
-			var rowID = $(customer).attr('id');
-			window.location.href = "/items/" + rowID;
-		}
 	});
 </script>
